@@ -26,6 +26,9 @@ SECRET_KEY = 'django-insecure-rcv73m8mzc%6v(*d*o9m^3$*b=1v7e_b(^)y93mn+=%181^oh$
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
+if DEBUG:
+    EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend' #Development ONLY
+
 ALLOWED_HOSTS = []
 
 AUTH_USER_MODEL = "account.Account"  
@@ -38,6 +41,7 @@ AUTHENTICATION_BACKENDS = (
 
 INSTALLED_APPS = [
     'account',
+    'bookapp',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -61,7 +65,7 @@ ROOT_URLCONF = 'main.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [BASE_DIR / 'templates'],
+        'DIRS': [os.path.join(BASE_DIR, 'templates')],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -122,12 +126,20 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/5.0/howto/static-files/
 
+STATICFILES_DIRS = [
+    os.path.join(BASE_DIR, 'static'),
+    os.path.join(BASE_DIR, 'media')
+]
+
 STATIC_URL = 'static/'
+MEDIA_URL = 'media/'
 
-# Media Files
-MEDIA_ROOT = os.path.join(BASE_DIR, 'media/images/')
-MEDIA_URL = 'media/images/'
+STATIC_ROOT = os.path.join(BASE_DIR, 'static_cdn')
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media_cdn')
 
+BASE_DIR = "http://127.0.0.1:8000/"
+
+TEMP = os.path.join(BASE_DIR, 'media_cdn/temp')
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.0/ref/settings/#default-auto-field
 

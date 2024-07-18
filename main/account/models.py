@@ -32,7 +32,7 @@ def get_profile_image_filepath(self, filename):
     return f'profile_images/{self.pk}/{"profile_image.png"}'
 
 def get_default_profile_image():
-    return 'default_profile.jpg'
+    return 'default_image/default_profile.jpg'
 
 class Account(AbstractBaseUser):
     email = models.EmailField(verbose_name="email", max_length=100, unique=True)
