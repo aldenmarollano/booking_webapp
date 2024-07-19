@@ -10,19 +10,12 @@ class BldgForm(forms.ModelForm):
 class RoomForm(forms.ModelForm):
     class Meta:
         model = Room
-        fields = ['name', 'occupancy', 'building']
+        fields = ['name', 'occupancy', 'building', 'price']
 
 
 class BookingForm(forms.ModelForm):
     class Meta:
         model = Booking
         fields = ['user', 'room', 'start_date', 'end_date']
-
-    def clean(self):
-        if self.is_valid():
-            user = self.cleaned_data['user']
-            room = self.cleaned_data['room']
-            start_date = self.cleaned_data['start_date']
-            end_date = self.cleaned_data['end_date']
             
 

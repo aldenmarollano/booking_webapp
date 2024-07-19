@@ -15,9 +15,10 @@ class Room(models.Model):
     name = models.CharField(max_length=100)
     occupancy = models.IntegerField()
     building = models.ForeignKey(Bldg, on_delete=models.CASCADE, related_name='building')
+    price = models.DecimalField(max_digits=6, decimal_places=3, default=0)
 
     def __str__(self):
-        return self.name
+        return f'{self.name}, {self.building}'
 
 
 class Booking(models.Model):

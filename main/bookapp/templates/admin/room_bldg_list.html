@@ -1,0 +1,18 @@
+{% extends 'base.html' %}
+{% block content %}
+
+<p>Home</p>
+{% if room_list %}
+    {% for room in room_list %}
+        <ul>
+            <li>Room: {{ room.name }}</li>
+            <li>Occupancy:{{ room.occupancy }}</li>
+            <li>Located at {{ room.building }}, {{ building.address }}</li>
+        </ul>
+    {% endfor %}
+{% else %}
+    <p>No available rooms.</p>
+{% endif %}
+
+<a href="{% url 'bookapp:bldg_register' %}">Register New Building</a>
+{% endblock content %}  
