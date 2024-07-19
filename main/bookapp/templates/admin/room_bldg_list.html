@@ -7,7 +7,7 @@
         <ul>
             <li>Room: {{ room.name }}</li>
             <li>Occupancy:{{ room.occupancy }}</li>
-            <li>Located at {{ room.building }}, {{ building.address }}</li>
+            <li>Located at {{ room.building }}, {{ room.building.address }}</li>
         </ul>
     {% endfor %}
 {% else %}

@@ -1,9 +1,16 @@
 {% extends 'base.html' %}
 {% block content %}
 <h1>Add New Room</h1>
-<form action=".">
+<form action="{% url 'bookapp:add_room' %}" method="POST">
     {% csrf_token %}
-    {{ form.as_p }}
-    <button class="btn" type="submit">Save</button>
+    {{ room.as_p }}
+    <button class="btn btn-primary" type="submit">Save</button>
 </form>
+{% if messages %}
+    <ul class="messages">
+        {% for message in messages %}
+            <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+        {% endfor %}
+    </ul>
+{% endif %}
 {% endblock content %}  

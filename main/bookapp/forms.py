@@ -12,6 +12,11 @@ class RoomForm(forms.ModelForm):
         model = Room
         fields = ['name', 'occupancy', 'building', 'price']
 
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        if not self.instance.pk and Bldg.objects.exists():
+            self.fields['building'].initial = Bldg.objects.latest('id').pk
+
 
 class BookingForm(forms.ModelForm):
     class Meta:

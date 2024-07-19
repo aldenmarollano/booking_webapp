@@ -1,5 +1,5 @@
 from django.db import models
-from django.contrib.auth.models import AbstractBaseUser, BaseUserManager
+from django.contrib.auth.models import AbstractBaseUser, BaseUserManager, Group
 
 class MyAccountManager(BaseUserManager):
     def create_user(self, email, username, password=None):
@@ -62,4 +62,14 @@ class Account(AbstractBaseUser):
     
     def has_module_perms(self, app_label):
         return True
-    
+
+user = User.objects.get(username='example_user')
+
+# Get the content type for the Bldg model
+content_type = ContentType.objects.get_for_model(Bldg)
+
+# Get or create the permission object
+permission_change_bldg = Permission.objects.get(codename='change_bldg', content_type=content_type)
+
+# Assign the permission to the user
+user.user_permissions.add(permission_change_bldg)
