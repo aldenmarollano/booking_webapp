@@ -9,10 +9,6 @@ class Bldg(models.Model):
     description = models.TextField()
     address = models.CharField(max_length=500)
 
-    user = Account.objects.get(username='admin')
-    permission = Permission.objects.get(codename=['view_bldg', 'change_bldg', 'delete_bldg'])
-    user.user_permissions.add(permission)
-
     def __str__(self):
         return self.name
 

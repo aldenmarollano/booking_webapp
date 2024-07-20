@@ -3,8 +3,11 @@ from django.http import HttpResponse
 from django.contrib.auth import login, authenticate, logout
 from django.views import View
 
+
+
 from account.forms import UserRegistrationForm, AccountAuthenticationForm
 from account.models import Account
+
 
 def user_registration_view(request, *args, **kwargs):
     user = request.user
@@ -22,7 +25,7 @@ def user_registration_view(request, *args, **kwargs):
             login(request, account)
             destination = get_redirect_if_exists(request)
             if destination:
-                return redirect('bookapp:home')
+                return redirect('bookapp:room_bldg_list')
         else:
             context['registration_form'] = form
     return render(request, 'account/account_register.html', context)
@@ -30,7 +33,7 @@ def user_registration_view(request, *args, **kwargs):
 
 def logout_view(request):
     logout(request)
-    return redirect('bookapp:home')
+    return redirect('bookapp:room_bldg_list')
 
 
 def login_view(request, *args, **kwargs):
@@ -38,7 +41,7 @@ def login_view(request, *args, **kwargs):
 
     user = request.user
     if user.is_authenticated:
-        return redirect('bookapp:home')
+        return redirect('bookapp:room_bldg_list')
     
     destination = get_redirect_if_exists(request)
 
@@ -53,7 +56,7 @@ def login_view(request, *args, **kwargs):
                 destination = get_redirect_if_exists(request)
                 if destination:
                     return redirect(destination)
-                return redirect("bookapp:home")
+                return redirect("bookapp:room_bldg_list")
         
         else:
             context['login_form'] = form

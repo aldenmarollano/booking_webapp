@@ -14,25 +14,19 @@ def user_home_screenview(request):
     return render(request, "bookapp/home.html", context)
 
 
-bldg_permissions = [
-    'bookapp.view_bldg',
-    'bookapp.change_bldg',
-    'bookapp.delete_bldg',
-]
 
 class BldgRegistrationView(View):
 
-    @method_decorator(permission_required(bldg_permissions))
-    def dispatch(self, request, *args, **kwargs):
-        return super().dispatch(request, *args, **kwargs)
-
     def get(self, request):
-        bldg_form = BldgForm()
-        context = {
-            'building': bldg_form,
-        }
+        if request.user.username == 'admin':
+            bldg_form = BldgForm()
+            context = {
+                'building': bldg_form,
+            }
 
-        return render(request, 'admin/register_bldg.html', context)
+            return render(request, 'admin/register_bldg.html', context)
+        else:
+            return redirect('bookapp:room_bldg_list')
     
     def post(self, request):
         bldg_form = BldgForm(request.POST)
@@ -44,13 +38,16 @@ class BldgRegistrationView(View):
 
 class RoomRegistrationView(View):
     def get(self, request):
-        room_form = RoomForm()
-        context = {
-            'room': room_form
-        }
+        if request.user.username == 'admin':
+            room_form = RoomForm()
+            context = {
+                'room': room_form
+            }
 
-        return render(request, 'admin/add_room.html', context)
-    
+            return render(request, 'admin/add_room.html', context)
+        else:
+            return redirect('bookapp:room_bldg_list')
+
     def post(self, request):
         room_form = RoomForm(request.POST)
         if room_form.is_valid():
