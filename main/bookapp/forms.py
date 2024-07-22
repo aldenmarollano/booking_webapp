@@ -10,7 +10,7 @@ class BldgForm(forms.ModelForm):
 class RoomForm(forms.ModelForm):
     class Meta:
         model = Room
-        fields = ['name', 'occupancy', 'building', 'price']
+        fields = ['name', 'occupancy', 'building', 'price', 'room_photo']
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -21,6 +21,6 @@ class RoomForm(forms.ModelForm):
 class BookingForm(forms.ModelForm):
     class Meta:
         model = Booking
-        fields = ['user', 'room', 'start_date', 'end_date']
+        fields = ['room', 'start_date', 'end_date']
             
 

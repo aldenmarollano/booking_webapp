@@ -1,7 +1,7 @@
 {% extends 'base.html' %}
 {% block content %}
 <h1>Add New Room</h1>
-<form action="{% url 'bookapp:add_room' %}" method="POST">
+<form action="{% url 'bookapp:add_room' %}" method="POST" enctype="multipart/form-data">
     {% csrf_token %}
     {{ room.as_p }}
     <button class="btn btn-primary" type="submit">Save</button>

@@ -24,6 +24,10 @@ urlpatterns = [
     path('account/', include('account.urls')),
     path('home/', include('bookapp.urls')),
 
+
+    path('api/book/', include('bookapp.api.urls')),
+    path('api/account/', include('account.api.urls')),
+
     path('admin/', admin.site.urls),
 
     # Password reset links (ref: https://github.com/django/django/blob/master/django/contrib/auth/views.py)

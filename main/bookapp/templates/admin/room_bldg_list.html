@@ -3,25 +3,35 @@
 <style>
     .book-card{
         border: 2px;
-        margin: auto;
+        /* margin: auto; */
+        margin-left: -10px;
         margin-top: 15px;
         padding: 5px;
         width: 30%;
-        background-color: wheat;
-        border-width: 5px;
+        height: 30%;
+        background-color: #85c1c4;
+    }
+
+    .room-image{
+        border-style: solid;
+        border-width: 2px;
+        border-color: #85c1c4;
     }
 </style>
+
 {% if room_list %}
 <div class="d-flex flex-column justify-content-center">
     {% for room in room_list %}
- 
+    <div class="d-flex flex-row">
+        <div class="flex-item p-3">
+            <img src="{{ room.room_photo.url }}" alt="" width="200px" height="200px" class="room-image">
+        </div>
         <div class="flex-item book-card p-3">
-        <form action=".">
-            <p>Room: {{ room.name }}</p>
-            <p>Occupancy:{{ room.occupancy }}</p>
-            <p>Located at {{ room.building }}, {{ room.building.address }}</p>
-            <button class="btn btn-danger" type="submit">Book</button>
-        </form>
+                <p>Room: {{ room.name }}</p>
+                <p>Occupancy:{{ room.occupancy }}</p>
+                <p>Located at {{ room.building }}, {{ room.building.address }}</p>
+                <a href="{% url 'bookapp:book_a_room' %}" class="text-decoration"><button class="btn btn-danger">Book</button></a>
+        </div>
     </div>
     {% endfor %}
 </div>
