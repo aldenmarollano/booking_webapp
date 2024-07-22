@@ -25,14 +25,24 @@ def apiOverView(request):
 @api_view(['POST', ])
 @permission_classes([IsAuthenticated])
 def api_create_book_view(request):
-    account = request.user
-    booking = Booking(user=account)
+    account = request.user.id
+    room_id = request.data.get('room_id')
+    start_date_str = request.data.get('start_date')
+    end_date_str = request.data.get('end_date')
 
-    if request.method == "POST":
-        serializer = BookingSerializer(booking, data=request.data)
-        if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
+    try:
+        room = Room.objects.get(pk=room_id)
+ 
+    except Room.DoesNotExist:
+        return Response({"error": f"Room with id={room_id} does not exist."}, status=status.HTTP_404_NOT_FOUND)
+    
+    booking_data = {'user':account, 'room': room.pk, 'start_date': start_date_str, 'end_date': end_date_str}
+    serializer = BookingSerializer(data=booking_data)
+
+    if serializer.is_valid():
+        serializer.save()
+        return Response(serializer.data, status=status.HTTP_201_CREATED)
+    else:
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
     
 
@@ -79,43 +89,6 @@ def api_update_book_view(request, bookid):
     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
-
-# @api_view(['GET',])
-# @permission_classes((IsAuthenticated,))
-# def api_is_author_of_blogpost(request, slug):
-# 	try:
-# 		blog_post = BlogPost.objects.get(slug=slug)
-# 	except BlogPost.DoesNotExist:
-# 		return Response(status=status.HTTP_404_NOT_FOUND)
-
-# 	data = {}
-# 	user = request.user
-# 	if blog_post.author != user:
-# 		data['response'] = "You don't have permission to edit that."
-# 		return Response(data=data)
-# 	data['response'] = "You have permission to edit that."
-# 	return Response(data=data)
-
-
-# @api_view(['DELETE',])
-# @permission_classes((IsAuthenticated, ))
-# def api_delete_blog_view(request, slug):
-
-# 	try:
-# 		blog_post = BlogPost.objects.get(slug=slug)
-# 	except BlogPost.DoesNotExist:
-# 		return Response(status=status.HTTP_404_NOT_FOUND)
-
-# 	user = request.user
-# 	if blog_post.author != user:
-# 		return Response({'response':"You don't have permission to delete that."}) 
-
-# 	if request.method == 'DELETE':
-# 		operation = blog_post.delete()
-# 		data = {}
-# 		if operation:
-# 			data['response'] = DELETE_SUCCESS
-# 		return Response(data=data)
 
 @api_view(['GET', 'POST, '])
 def room_list_view(request):

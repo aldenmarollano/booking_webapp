@@ -1,0 +1,71 @@
+{% extends 'base.html' %}
+{% block content %}
+
+<div class="d-flex flex-column justify-content-center">
+    <div class="d-flex flex-row">
+        <div class="flex-item p-3">
+            <img src="{{ room.room_photo.url }}" alt="" width="200px" height="200px" class="room-image">
+        </div>
+        <div class="flex-item book-card p-3">
+                <p>ID: {{ room.id }}</p>
+                <p>Room: {{ room.name }}</p>
+                <p>Occupancy:{{ room.occupancy }}</p>
+                <p>Room: {{ room.price }}</p>
+                <p>Located at {{ room.building }}, {{ room.building.address }}</p>
+                <form action="{% url 'bookapp:book_a_room' %}" method="POST">
+                {% csrf_token %}
+            
+                    <input type="text" id="user_id" name="user" value="{{ request.user.id }}" hidden>
+                
+                    <input type="text" id="room_id" name="room" value="{{ room.id }}" hidden>
+              
+                    <label for="id_start_date">Start Date:</label>
+                    <input type="date" id="start_date_id" name="start_date" value="{{ booking_form.start_date.value }}">
+
+                    <label for="id_end_date">End Date:</label>
+                    <input type="date" id="end_date_id" name="end_date" value="{{ booking_form.end_date.value }}">
+                    {% if form.errors %}
+                    <ul>
+                        {% for field, errors in form.errors.items %}
+                            {% for error in errors %}
+                                <li>{{ error }}</li>
+                            {% endfor %}
+                        {% endfor %}
+                    </ul>
+                    {% endif %}
+                <button class="btn btn-primary" type="submit">Save</button>
+                </form>
+                
+        </div>
+    </div>
+</div>
+<script>
+    $(document).ready(function() {
+        $('#bookingForm').submit(function(event) {
+            event.preventDefault();
+            
+            var formData = {
+                room_id: $('#user_id').val(),
+                room_id: $('#room_id').val(),
+                start_date: $('#start_date').val(),
+                end_date: $('#end_date').val()
+            };
+
+            $.ajax({
+                type: 'POST',
+                url: '/api/book/',
+                data: JSON.stringify(formData),
+                contentType: 'application/json',
+                success: function(response) {
+                    $('#responseMessage').html('<p>Booking successful!</p>');
+                    console.log(response);
+                },
+                error: function(xhr, status, error) {
+                    $('#responseMessage').html('<p>Error: ' + xhr.responseText + '</p>');
+                    console.error(xhr.responseText);
+                }
+            });
+        });
+    });
+    </script>
+{% endblock %}

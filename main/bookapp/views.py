@@ -1,5 +1,5 @@
 from email import message
-from django.shortcuts import redirect, render
+from django.shortcuts import get_object_or_404, redirect, render
 from django.views import View
 from django.contrib.auth.decorators import permission_required
 from django.utils.decorators import method_decorator
@@ -56,44 +56,62 @@ class RoomRegistrationView(View):
             room_form.save()
         return redirect('bookapp:room_bldg_list')
     
+class BookedRoomView(View):
+    def get(self, request):
+        room_list = Booking.objects.filter(is_active=True)
+        context = {
+            'room_list': room_list
+        }
+        return render(request, 'admin/booked_room.html', context)
+
+class CheckedOutView(View):
+    def post(self, request, id):
+        checkout_room = Booking.objects.get(id=id)
+        checkout_room.is_active = False
+        room = get_object_or_404(Room, pk=checkout_room.room.id)
+        room.is_booked = False
+        room.save()
+        checkout_room.save()
+
+        return redirect('bookapp:booked')
+
+
 class RoomBldgListView(View):
     def get(self, request):
-        # building_list = Bldg.objects.all()
         room_list = Room.objects.filter(is_booked=False)
         
         context = {
-            # 'building_list': building_list,
             'room_list': room_list
         }
         return render(request, 'admin/room_bldg_list.html', context)
-
-
-class BookingRegistration(LoginRequiredMixin, View):
-
+    
+class RoomView(LoginRequiredMixin, View):
     def dispatch(self, request, *args, **kwargs):
         if request.user.is_authenticated:
             return super().dispatch(request, *args, **kwargs)
         else:
             return redirect('account:login')
 
-    def get(self, request):
+    def get(self, request, id):
+        room = Room.objects.get(pk=id)
         booking_form = BookingForm()
         context = {
-            'booking_form':booking_form
+            'room': room,
+            'booking_form': booking_form
         }
-        return render(request, 'bookapp/booking_form.html', context)
+        return render(request, 'bookapp/room.html', context)
     
     def post(self, request):
-        booking_form = BookingForm(request.POST, user=request.user)
-        if booking_form.is_valid():
-            booking_form.save()
-
-            room_id = booking_form.cleaned_data['room'].id
-            room = Room.objects.get(pk=room_id)
+        form = BookingForm(request.POST)
+        if form.is_valid():
+            new_booking = form.save(commit=False)
+            room_id = form.cleaned_data['room']
+            room = get_object_or_404(Room, pk=room_id.id)
             room.is_booked = True
             room.save()
-        return render('bookapp:room_bldg_list')
-            
+            new_booking.save()
 
-
+            return redirect('bookapp:room_bldg_list')
+        else:
+            form = BookingForm()
                         

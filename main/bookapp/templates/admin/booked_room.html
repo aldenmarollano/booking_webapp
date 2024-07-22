@@ -1,0 +1,45 @@
+{% extends 'base.html' %}
+{% block content %}
+<style>
+    .book-card{
+        border: 2px;
+        /* margin: auto; */
+        margin-left: -10px;
+        margin-top: 15px;
+        padding: 5px;
+        width: 30%;
+        height: 30%;
+        background-color: #85c1c4;
+    }
+
+    .room-image{
+        border-style: solid;
+        border-width: 2px;
+        border-color: #85c1c4;
+    }
+</style>
+
+{% if room_list %}
+<div class="d-flex flex-column justify-content-center">
+    {% for room in room_list %}
+    <form action="{% url 'bookapp:checkout' room.id %}" method="POST">
+        {% csrf_token %}
+        <div class="d-flex flex-row">
+            <div class="flex-item p-3">
+                <img src="{{ room.room.room_photo.url }}" alt="" width="200px" height="200px" class="room-image">
+            </div>
+            <div class="flex-item book-card p-3"    >
+                    <p>Reserved by: {{ room.user }}</p>
+                    <p>Room: {{ room.room.name }}</p>
+                    <p>Occupancy:{{ room.room.occupancy }}</p>
+                    <p>Located at {{ room.room.building }}, {{ room.room.building.address }}</p>
+                    <button class="btn btn-danger" type="submit">Checkout</button></a>
+            </div>
+        </div>
+    </form>
+    {% endfor %}
+</div>
+{% else %}
+    <p>No available rooms.</p>
+{% endif %}
+{% endblock content %}  

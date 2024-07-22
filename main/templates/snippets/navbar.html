@@ -13,6 +13,9 @@
 		<h5 class="mr-3 justify-content-start ms-2">
 		<a class="p-2 text-dark text-decoration-none" href="{% url 'bookapp:add_room' %}">Add Room</a>
 		</h5>
+		<h5 class="mr-3 justify-content-start ms-2">
+			<a class="p-2 text-dark text-decoration-none" href="{% url 'bookapp:booked' %}">Booked Room</a>
+		</h5>
 		{% endif %}
 
 		<div class="d-flex flex-row-reverse flex-grow-1">
@@ -47,6 +50,7 @@
 		{% if request.user.username == 'admin' %}
 		<a href="{% url 'bookapp:bldg_register'%}">Register New Building</a>
 		<a href="{% url 'bookapp:add_room' %}">Add Room</a>
+		<a class="p-2 text-dark text-decoration-none" href="{% url 'bookapp:booked' %}">Booked Room</a>
 		{% endif %}
 		<div class="d-flex flex-row-reverse flex-grow-1">
 			<nav class="">

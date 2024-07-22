@@ -13,20 +13,9 @@ class BookingSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Booking
-        fields = ['room', 'start_date', 'end_date']
-
-    def create(self, validated_data):
-        room_id = validated_data.pop('room')
-
-        room_instance = Room.objects.get(pk=room_id['id'])
-
-        booking_instance = Booking.objects.create(room=room_instance, **validated_data)
-        return booking_instance
-
-
+        fields = ['user', 'room', 'start_date', 'end_date']
+        
     def update(self, instance, validated_data):
-        # read_only_fields = ['room']
-        # Ensure read-only fields are not updated
         instance.start_date = validated_data.get('start_date', instance.start_date)
         instance.end_date = validated_data.get('end_date', instance.end_date)
         instance.save()

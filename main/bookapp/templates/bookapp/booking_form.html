@@ -1,7 +1,7 @@
 {% extends 'base.html' %}
 {% block content %}
 <h3>Select Dates</h3>
-<form action="{% url 'bookapp:book_a_room' %}" method="POST">
+<form action="{% url 'bookapp:book_a_room' room %}" method="POST">
     {% csrf_token %}
     {{ booking_form.as_p }}
     <button class="btn btn-primary" type="submit">Save</button>

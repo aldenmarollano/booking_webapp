@@ -38,6 +38,7 @@ class Booking(models.Model):
     room = models.ForeignKey(Room, on_delete=models.CASCADE, related_name='bookings')
     start_date = models.DateTimeField()
     end_date = models.DateTimeField()
+    is_active = models.BooleanField(default=True)
 
     def __str__(self):
         return f'{self.room} : {self.user}'

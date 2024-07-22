@@ -14,6 +14,8 @@
 
     .room-image{
         border-style: solid;
+        width: 250px;
+        height: 270px;
         border-width: 2px;
         border-color: #85c1c4;
     }
@@ -27,10 +29,12 @@
             <img src="{{ room.room_photo.url }}" alt="" width="200px" height="200px" class="room-image">
         </div>
         <div class="flex-item book-card p-3">
+                <p>ID: {{ room.id }}</p>
                 <p>Room: {{ room.name }}</p>
                 <p>Occupancy:{{ room.occupancy }}</p>
+                <p>Room: {{ room.price }}</p>
                 <p>Located at {{ room.building }}, {{ room.building.address }}</p>
-                <a href="{% url 'bookapp:book_a_room' %}" class="text-decoration"><button class="btn btn-danger">Book</button></a>
+                <a href="{% url 'bookapp:room_data' room.id %}" class="text-decoration"><button class="btn btn-danger">Book</button></a>
         </div>
     </div>
     {% endfor %}
