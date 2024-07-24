@@ -39,33 +39,4 @@
         </div>
     </div>
 </div>
-<script>
-    $(document).ready(function() {
-        $('#bookingForm').submit(function(event) {
-            event.preventDefault();
-            
-            var formData = {
-                room_id: $('#user_id').val(),
-                room_id: $('#room_id').val(),
-                start_date: $('#start_date').val(),
-                end_date: $('#end_date').val()
-            };
-
-            $.ajax({
-                type: 'POST',
-                url: '/api/book/',
-                data: JSON.stringify(formData),
-                contentType: 'application/json',
-                success: function(response) {
-                    $('#responseMessage').html('<p>Booking successful!</p>');
-                    console.log(response);
-                },
-                error: function(xhr, status, error) {
-                    $('#responseMessage').html('<p>Error: ' + xhr.responseText + '</p>');
-                    console.error(xhr.responseText);
-                }
-            });
-        });
-    });
-    </script>
-{% endblock %}
+{% endblock content %}

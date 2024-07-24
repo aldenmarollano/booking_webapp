@@ -58,7 +58,7 @@ class RoomRegistrationView(View):
     
 class BookedRoomView(View):
     def get(self, request):
-        room_list = Booking.objects.filter(is_active=True)
+        room_list = Booking.objects.all()
         context = {
             'room_list': room_list
         }
@@ -67,18 +67,14 @@ class BookedRoomView(View):
 class CheckedOutView(View):
     def post(self, request, id):
         checkout_room = Booking.objects.get(id=id)
-        checkout_room.is_active = False
-        room = get_object_or_404(Room, pk=checkout_room.room.id)
-        room.is_booked = False
-        room.save()
-        checkout_room.save()
+        checkout_room.delete()
 
         return redirect('bookapp:booked')
 
 
 class RoomBldgListView(View):
     def get(self, request):
-        room_list = Room.objects.filter(is_booked=False)
+        room_list = Room.objects.all()
         
         context = {
             'room_list': room_list
@@ -107,7 +103,6 @@ class RoomView(LoginRequiredMixin, View):
             new_booking = form.save(commit=False)
             room_id = form.cleaned_data['room']
             room = get_object_or_404(Room, pk=room_id.id)
-            room.is_booked = True
             room.save()
             new_booking.save()
 

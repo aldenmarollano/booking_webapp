@@ -1,5 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import Permission
+from datetime import datetime
 
 from account.models import Account
 import os
@@ -27,7 +28,6 @@ class Room(models.Model):
     building = models.ForeignKey(Bldg, on_delete=models.CASCADE, related_name='building')
     price = models.DecimalField(max_digits=9, decimal_places=3, default=0)
     room_photo = models.ImageField(null=True, blank=True, upload_to=get_room_image_filepath, default=get_default_room_image)
-    is_booked = models.BooleanField(default=False)
 
     def __str__(self):
         return f'{self.name}, {self.building}'
@@ -38,7 +38,10 @@ class Booking(models.Model):
     room = models.ForeignKey(Room, on_delete=models.CASCADE, related_name='bookings')
     start_date = models.DateTimeField()
     end_date = models.DateTimeField()
-    is_active = models.BooleanField(default=True)
+
+    @property
+    def formatted_datetime(self):
+        return self.datetime_field.strftime("%m-%d-%y %H:%M:%S")
 
     def __str__(self):
         return f'{self.room} : {self.user}'
