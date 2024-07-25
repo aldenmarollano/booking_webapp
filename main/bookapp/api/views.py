@@ -12,6 +12,12 @@ from bookapp.api.serializers import BookingSerializer, RoomSerializer
 from rest_framework.decorators import api_view, authentication_classes, permission_classes
 from rest_framework.authentication import SessionAuthentication, BasicAuthentication
 from rest_framework.permissions import IsAuthenticated
+from django.shortcuts import get_object_or_404
+
+import datetime
+import pytz
+
+utc=pytz.UTC
 
 SUCCESS = 'success'
 ERROR = 'error'
@@ -30,20 +36,39 @@ def api_create_book_view(request):
     start_date_str = request.data.get('start_date')
     end_date_str = request.data.get('end_date')
 
-    try:
-        room = Room.objects.get(pk=room_id)
- 
-    except Room.DoesNotExist:
-        return Response({"error": f"Room with id={room_id} does not exist."}, status=status.HTTP_404_NOT_FOUND)
+    book_start_date = datetime.datetime.strptime(start_date_str, '%Y-%m-%d')
+    book_end_date = datetime.datetime.strptime(end_date_str, '%Y-%m-%d')
+     
+    room_data = get_object_or_404(Room, id=int(room_id))
     
-    booking_data = {'user':account, 'room': room.pk, 'start_date': start_date_str, 'end_date': end_date_str}
-    serializer = BookingSerializer(data=booking_data)
+    try:
+        booking = Booking.objects.get(room=room_data)
+    #    booking = Booking.objects.filter(room=room_id).filter(start_date__range=(start_date_str, end_date_str))
 
-    if serializer.is_valid():
-        serializer.save()
-        return Response(serializer.data, status=status.HTTP_201_CREATED)
+    except:
+        booking_data = {'user':account, 'room': room_id, 'start_date': start_date_str, 'end_date': end_date_str}
+        serializer = BookingSerializer(data=booking_data)
+
+        if serializer.is_valid():
+            serializer.save()
+            # return Response(serializer.data, status=status.HTTP_201_CREATED)
+            return Response("LOL")
+        else:
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        
     else:
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        if (book_start_date.replace(tzinfo=utc) >= booking.start_date.replace(tzinfo=utc) and book_start_date.replace(tzinfo=utc) <= booking.end_date.replace(tzinfo=utc)) and (book_end_date.replace(tzinfo=utc) >= booking.start_date.replace(tzinfo=utc) and book_end_date.replace(tzinfo=utc) <= booking.end_date.replace(tzinfo=utc) ):
+            return Response("Room is no longer available.")
+        
+        else:   
+            booking_data = {'user':account, 'room': room_id, 'start_date': start_date_str, 'end_date': end_date_str}
+            serializer = BookingSerializer(data=booking_data)
+
+            if serializer.is_valid():
+                serializer.save()
+                return Response(serializer.data, status=status.HTTP_201_CREATED)
+            else:
+                return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
     
 
 @api_view(['GET', ])
