@@ -13,11 +13,12 @@ from rest_framework.decorators import api_view, authentication_classes, permissi
 from rest_framework.authentication import SessionAuthentication, BasicAuthentication
 from rest_framework.permissions import IsAuthenticated
 from django.shortcuts import get_object_or_404
+from datetime import datetime
 
-import datetime
-import pytz
+# import datetime
+# import pytz
 
-utc=pytz.UTC
+# utc=pytz.UTC
 
 SUCCESS = 'success'
 ERROR = 'error'
@@ -31,44 +32,39 @@ def apiOverView(request):
 @api_view(['POST', ])
 @permission_classes([IsAuthenticated])
 def api_create_book_view(request):
-    account = request.user.id
-    room_id = request.data.get('room_id')
-    start_date_str = request.data.get('start_date')
-    end_date_str = request.data.get('end_date')
 
-    book_start_date = datetime.datetime.strptime(start_date_str, '%Y-%m-%d')
-    book_end_date = datetime.datetime.strptime(end_date_str, '%Y-%m-%d')
-     
-    room_data = get_object_or_404(Room, id=int(room_id))
+        account = request.user.id
+        room_id = request.data.get('room_id')
+        start_date_str = request.data.get('start_date')
+        end_date_str = request.data.get('end_date')
+        
+        start_date = datetime.strptime(start_date_str, '%Y-%m-%d %H:%M')
+        end_date = datetime.strptime(end_date_str, '%Y-%m-%d %H:%M')
+
+        room = get_object_or_404(Room, id=room_id)
+
+        booking_date = Booking.objects.filter( 
+            room=room, 
+            start_date__lt=end_date, 
+            end_date__gt=start_date )
     
-    try:
-        booking = Booking.objects.get(room=room_data)
-    #    booking = Booking.objects.filter(room=room_id).filter(start_date__range=(start_date_str, end_date_str))
+        if booking_date.exists():
+            return Response("Room is not available for the selected dates.", status=status.HTTP_400_BAD_REQUEST)
+    
+        booking_data = {
+            'user': account,
+            'room': room_id,
+            'start_date': start_date_str,
+            'end_date': end_date_str
+        }
 
-    except:
-        booking_data = {'user':account, 'room': room_id, 'start_date': start_date_str, 'end_date': end_date_str}
         serializer = BookingSerializer(data=booking_data)
-
         if serializer.is_valid():
             serializer.save()
-            # return Response(serializer.data, status=status.HTTP_201_CREATED)
-            return Response("LOL")
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
         else:
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-        
-    else:
-        if (book_start_date.replace(tzinfo=utc) >= booking.start_date.replace(tzinfo=utc) and book_start_date.replace(tzinfo=utc) <= booking.end_date.replace(tzinfo=utc)) and (book_end_date.replace(tzinfo=utc) >= booking.start_date.replace(tzinfo=utc) and book_end_date.replace(tzinfo=utc) <= booking.end_date.replace(tzinfo=utc) ):
-            return Response("Room is no longer available.")
-        
-        else:   
-            booking_data = {'user':account, 'room': room_id, 'start_date': start_date_str, 'end_date': end_date_str}
-            serializer = BookingSerializer(data=booking_data)
 
-            if serializer.is_valid():
-                serializer.save()
-                return Response(serializer.data, status=status.HTTP_201_CREATED)
-            else:
-                return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
     
 
 @api_view(['GET', ])

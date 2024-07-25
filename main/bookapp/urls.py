@@ -4,7 +4,8 @@ from bookapp.views import (BldgRegistrationView,
                            RoomRegistrationView,
                            BookedRoomView,
                            CheckedOutView,
-                           RoomView
+                           RoomView,
+                        #    BookRoomView
                             )
 
 app_name = 'bookapp'
