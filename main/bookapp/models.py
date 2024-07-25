@@ -39,12 +39,9 @@ class Booking(models.Model):
     start_date = models.DateTimeField()
     end_date = models.DateTimeField()
 
-<<<<<<< HEAD
-=======
     @property
     def formatted_datetime(self):
         return self.datetime_field.strftime("%m-%d-%y %H:%M:%S")
->>>>>>> 7c2c1d2dd71c803e3b1f69413df70e7631759ba5
 
     def __str__(self):
         return f'{self.room} : {self.user}'
