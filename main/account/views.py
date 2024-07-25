@@ -38,7 +38,6 @@ def logout_view(request):
 
 def login_view(request, *args, **kwargs):
     context = {}
-
     user = request.user
     if user.is_authenticated:
         return redirect('bookapp:room_bldg_list')
